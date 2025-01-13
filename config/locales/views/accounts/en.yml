@@ -1,0 +1,64 @@
+---
+en:
+  accounts:
+    account:
+      has_issues: Issue detected.
+      troubleshoot: Troubleshoot
+    account_list:
+      new_account: New %{type}
+    chart:
+      no_change: no change
+    create:
+      success: "%{type} account created"
+    destroy:
+      success: "%{type} account scheduled for deletion"
+    empty:
+      empty_message: Add an account either via connection, importing or entering manually.
+      new_account: New account
+      no_accounts: No accounts yet
+    form:
+      balance: Current balance
+      name_label: Account name
+      name_placeholder: Example account name
+    index:
+      accounts: Accounts
+      manual_accounts:
+        other_accounts: Other accounts
+      new_account: New account
+      sync: Sync all
+    new:
+      import_accounts: Import accounts
+      method_selector:
+        connected_entry: Link account
+        manual_entry: Enter account balance
+        title: How would you like to add it?
+      title: What would you like to add?
+    show:
+      chart:
+        balance: Balance
+        owed: Amount owed
+      menu:
+        confirm_accept: Delete "%{name}"
+        confirm_body_html: "<p>By deleting this account, you will erase its value
+          history, affecting various aspects of your overall account. This action
+          will have a direct impact on your net worth calculations and the account
+          graphs.</p><br /> <p>After deletion, there is no way you'll be able to restore
+          the account information because you'll need to add it as a new account.</p>"
+        confirm_title: Delete account?
+        edit: Edit
+        import: Import transactions
+        manage: Manage accounts
+    summary:
+      header:
+        accounts: Accounts
+        manage: Manage accounts
+        new: New account
+      new: New account
+      no_assets: No assets found
+      no_assets_description: Add an asset either via connection, importing or entering
+        manually.
+      no_liabilities: No liabilities found
+      no_liabilities_description: Add a liability either via connection, importing
+        or entering manually.
+    update:
+      success: "%{type} account updated"

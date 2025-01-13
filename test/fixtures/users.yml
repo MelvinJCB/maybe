@@ -1,20 +1,33 @@
-bob:
+empty:
+  family: empty
+  first_name: User
+  last_name: One
+  email: user1@email.com
+  password_digest: <%= BCrypt::Password.create('password') %>
+  onboarded_at: <%= 3.days.ago %>
+
+maybe_support_staff:
+  family: empty
+  first_name: Support
+  last_name: Admin
+  email: support@maybefinance.com
+  password_digest: <%= BCrypt::Password.create('password') %>
+  role: super_admin
+  onboarded_at: <%= 3.days.ago %>
+
+family_admin:
   family: dylan_family
   first_name: Bob
   last_name: Dylan
   email: bob@bobdylan.com
   password_digest: <%= BCrypt::Password.create('password') %>
+  role: admin
+  onboarded_at: <%= 3.days.ago %>
 
-jakob:
+family_member:
   family: dylan_family
   first_name: Jakob
   last_name: Dylan
   email: jakobdylan@yahoo.com
   password_digest: <%= BCrypt::Password.create('password') %>
-
-keith:
-  family: richards_family
-  first_name: Keith
-  last_name: Richards
-  email: keith@rollingstones.com
-  password_digest: <%= BCrypt::Password.create('password') %>
+  onboarded_at: <%= 3.days.ago %>

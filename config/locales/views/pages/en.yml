@@ -1,0 +1,23 @@
+---
+en:
+  pages:
+    changelog:
+      title: What's new
+    dashboard:
+      allocation_chart:
+        assets: Assets
+        debts: Debts
+      fallback_greeting: Welcome back, friend
+      greeting: Welcome back, %{name}
+      import: Import
+      income: Income
+      investing: Investing (coming soon...)
+      net_worth: Net Worth
+      new: New account
+      no_transactions: You have no recent transactions
+      savings_rate: Savings Rate
+      spending: Spending
+      subtitle: Here's what's happening today
+      title: Dashboard
+      transactions: Recent transactions
+      view_all: View all

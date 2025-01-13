@@ -1,0 +1,49 @@
+<div class="space-y-4 h-full flex flex-col overflow-y-auto">
+  <%= render "header" %>
+
+  <%= render "summary", totals: @totals %>
+
+  <div id="transactions"
+       data-controller="bulk-select"
+       data-bulk-select-singular-label-value="<%= t(".transaction") %>"
+       data-bulk-select-plural-label-value="<%= t(".transactions") %>"
+       class="overflow-y-auto flex flex-col bg-white rounded-xl border border-alpha-black-25 shadow-xs p-4">
+    <%= render "transactions/searches/search" %>
+
+    <div id="entry-selection-bar" data-bulk-select-target="selectionBar" class="flex justify-center hidden">
+      <%= render "account/transactions/selection_bar" %>
+    </div>
+
+    <% if @transaction_entries.present? %>
+      <div class="grow overflow-y-auto">
+        <div class="grid grid-cols-12 bg-gray-25 rounded-xl px-5 py-3 text-xs uppercase font-medium text-gray-500 items-center mb-4">
+          <div class="pl-0.5 col-span-8 flex items-center gap-4">
+            <%= check_box_tag "selection_entry",
+                              class: "maybe-checkbox maybe-checkbox--light",
+                              data: { action: "bulk-select#togglePageSelection" } %>
+            <p>transaction</p>
+          </div>
+
+          <p class="col-span-2">category</p>
+          <p class="col-span-2 justify-self-end">amount</p>
+        </div>
+        <div class="space-y-6">
+          <%= entries_by_date(@transaction_entries, totals: true) do |entries| %>
+            <%# Render transfers by selecting one side of the transfer (to prevent double-rendering the same transfer across date groups) %>
+            <%= render partial: "transfers/transfer",
+                       collection: entries.select { |e| e.account_transaction.transfer? && e.account_transaction.transfer_as_outflow.present? }.map { |e| e.account_transaction.transfer_as_outflow } %>
+
+            <%# Render regular entries %>
+            <%= render partial: "account/entries/entry", collection: entries.reject { |e| e.account_transaction.transfer? } %>
+          <% end %>
+        </div>
+      </div>
+    <% else %>
+      <%= render "account/entries/empty" %>
+    <% end %>
+
+    <div class="pt-4">
+      <%= render "pagination", pagy: @pagy %>
+    </div>
+  </div>
+</div>

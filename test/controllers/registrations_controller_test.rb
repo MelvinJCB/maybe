@@ -6,7 +6,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "create" do
+  test "create redirects to correct URL" do
     post registration_url, params: { user: {
       email: "john@example.com",
       password: "password",
@@ -16,7 +16,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "create when hosted requires an invite code" do
-    in_hosted_app do
+    with_env_overrides REQUIRE_INVITE_CODE: "true" do
       assert_no_difference "User.count" do
         post registration_url, params: { user: {
           email: "john@example.com",
@@ -41,14 +41,5 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
         assert_redirected_to root_url
       end
     end
-  end
-
-  private
-
-  def in_hosted_app
-    ENV["HOSTED"] = "true"
-    yield
-  ensure
-    ENV["HOSTED"] = nil
   end
 end

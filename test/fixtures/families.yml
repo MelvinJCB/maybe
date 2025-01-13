@@ -1,7 +1,10 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+empty:
+  name: Family
+  stripe_subscription_status: active
+  last_synced_at: <%= Time.now %>
 
 dylan_family:
   name: The Dylan Family
+  stripe_subscription_status: active
+  last_synced_at: <%= Time.now %>
 
-richards_family:
-  name: The Richards Family

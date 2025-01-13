@@ -1,15 +1,13 @@
-<h1>Update Password</h1>
+<h1><% t(".title") %></h1>
 
-<%= form_with model: current_user, url: password_path do |form| %>
-  <%= auth_messages form %>
-
+<%= styled_form_with model: Current.user, url: password_path, class: "space-y-4" do |form| %>
   <div>
-    <%= form.label :password_challenge, "Current Password" %>
+    <%= form.label :password_challenge, t(".password_challenge") %>
     <%= form.password_field :password_challenge %>
   </div>
 
   <div>
-    <%= form.label :password, "New Password" %>
+    <%= form.label :password, t(".password") %>
     <%= form.password_field :password %>
   </div>
 
@@ -19,7 +17,6 @@
   </div>
 
   <div>
-    <%= form.submit 'Update Password' %>
+    <%= form.submit t(".submit") %>
   </div>
 <% end %>
-

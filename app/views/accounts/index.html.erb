@@ -1,17 +1,43 @@
-
-<h2 class="text-2xl font-semibold font-display">Cash</h2>
-<h3 class="mt-1 mb-4 text-sm text-gray-500"><%#= number_to_currency current_family.cash_balance %></h3>
-
-<% current_family.accounts.each do |account| %>
-    <div class="flex items-center justify-between px-3 py-3 mb-2 bg-white shadow-sm rounded-xl">
-      <div class="flex items-center text-sm">
-        <%= account.name %>
-      </div>
-      <div class="flex items-center text-sm">
-        <%= account.accountable %>
-      </div>
-      <p class="text-sm text-right">
-        <span class="block mb-1"><%= number_to_currency account.balance %></span>
-      </p>
-    </div>
+<% content_for :sidebar do %>
+  <%= render "settings/nav" %>
 <% end %>
+
+<div class="space-y-4">
+  <header class="flex justify-between items-center text-gray-900 font-medium">
+    <h1 class="text-xl"><%= t(".accounts") %></h1>
+    <div class="flex items-center gap-5">
+      <div class="flex items-center gap-2">
+        <%= button_to sync_all_accounts_path,
+                      disabled: Current.family.syncing?,
+                      class: "btn btn--outline flex items-center gap-2",
+                      title: t(".sync") do %>
+          <%= lucide_icon "refresh-cw", class: "w-5 h-5" %>
+          <span><%= t(".sync") %></span>
+        <% end %>
+
+        <%= link_to new_account_path(return_to: accounts_path),
+                    data: { turbo_frame: "modal" },
+                    class: "btn btn--primary flex items-center gap-1" do %>
+          <%= lucide_icon("plus", class: "w-5 h-5") %>
+          <p class="text-sm font-medium"><%= t(".new_account") %></p>
+        <% end %>
+      </div>
+    </div>
+  </header>
+
+  <% if @manual_accounts.empty? && @plaid_items.empty? %>
+    <%= render "empty" %>
+  <% else %>
+    <div class="space-y-2">
+      <% if @plaid_items.any? %>
+        <%= render @plaid_items.sort_by(&:created_at) %>
+      <% end %>
+
+      <% if @manual_accounts.any? %>
+        <%= render "accounts/index/manual_accounts", accounts: @manual_accounts %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= settings_nav_footer %>
+</div>

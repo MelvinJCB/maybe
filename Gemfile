@@ -1,13 +1,12 @@
 source "https://rubygems.org"
 
-ruby "3.3.0"
+ruby file: ".ruby-version"
 
 # Rails
-gem "rails", github: "rails/rails", branch: "main"
+gem "rails", "~> 7.2.2"
 
 # Drivers
-gem "pg", "~> 1.1"
-gem "redis", ">= 4.0.1"
+gem "pg", "~> 1.5"
 
 # Deployment
 gem "puma", ">= 5.0"
@@ -17,33 +16,65 @@ gem "bootsnap", require: false
 gem "importmap-rails"
 gem "propshaft"
 gem "tailwindcss-rails"
+gem "lucide-rails", github: "maybe-finance/lucide-rails"
 
 # Hotwire
 gem "stimulus-rails"
-gem "turbo-rails", github: "hotwired/turbo-rails", branch: "main"
+gem "turbo-rails"
+gem "hotwire_combobox"
+
+# Background Jobs
+gem "good_job"
+
+# Error logging
+gem "stackprof"
+gem "sentry-ruby"
+gem "sentry-rails"
+
+# Active Storage
+gem "aws-sdk-s3", require: false
+gem "image_processing", ">= 1.2"
 
 # Other
-gem "bcrypt", "~> 3.1.7"
+gem "bcrypt", "~> 3.1"
+gem "jwt"
+gem "faraday"
+gem "faraday-retry"
+gem "faraday-multipart"
 gem "inline_svg"
-gem "jbuilder"
-gem "tzinfo-data", platforms: %i[ windows jruby ]
+gem "octokit"
+gem "pagy"
+gem "rails-settings-cached"
+gem "tzinfo-data", platforms: %i[windows jruby]
+gem "csv"
+gem "redcarpet"
+gem "stripe"
+gem "intercom-rails"
+gem "plaid"
 
 group :development, :test do
-  gem "debug", platforms: %i[ mri windows ]
+  gem "debug", platforms: %i[mri windows]
   gem "brakeman", require: false
   gem "rubocop-rails-omakase", require: false
-  gem "dotenv"
-  gem "letter_opener"
   gem "i18n-tasks"
+  gem "erb_lint"
+  gem "dotenv-rails"
 end
 
 group :development do
-  gem "web-console"
   gem "hotwire-livereload"
+  gem "letter_opener"
   gem "ruby-lsp-rails"
+  gem "web-console"
+  gem "faker"
 end
 
 group :test do
   gem "capybara"
   gem "selenium-webdriver"
+  gem "mocha"
+  gem "vcr"
+  gem "webmock"
+  gem "climate_control"
+  gem "simplecov", require: false
 end

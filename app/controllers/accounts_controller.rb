@@ -1,43 +1,51 @@
 class AccountsController < ApplicationController
-  before_action :authenticate_user!
+  layout :with_sidebar
 
-  def new
-    if params[:type].blank? || Account.accountable_types.include?("Account::#{params[:type]}")
-      @account = if params[:type].blank?
-        Account.new
-      else
-        Account.new(accountable_type: "Account::#{params[:type]}")
-      end
-    else
-      head :not_found
-    end
+  before_action :set_account, only: %i[sync]
+
+  def index
+    @manual_accounts = Current.family.accounts.where(scheduled_for_deletion: false).manual.alphabetically
+    @plaid_items = Current.family.plaid_items.where(scheduled_for_deletion: false).ordered
   end
 
-  def show
+  def summary
+    @period = Period.from_param(params[:period])
+    snapshot = Current.family.snapshot(@period)
+    @net_worth_series = snapshot[:net_worth_series]
+    @asset_series = snapshot[:asset_series]
+    @liability_series = snapshot[:liability_series]
+    @accounts = Current.family.accounts.active
+    @account_groups = @accounts.by_group(period: @period, currency: Current.family.currency)
   end
 
-  def create
-    @account = Account.new(account_params.merge(family: current_family))
-    @account.accountable = account_params[:accountable_type].constantize.new
+  def list
+    @period = Period.from_param(params[:period])
+    render layout: false
+  end
 
-    if @account.save
-      redirect_to accounts_path, notice: "New account created successfully"
-    else
-      render "new", status: :unprocessable_entity
+  def sync
+    unless @account.syncing?
+      @account.sync_later
     end
+
+    redirect_to account_path(@account)
+  end
+
+  def chart
+    @account = Current.family.accounts.find(params[:id])
+    render layout: "application"
+  end
+
+  def sync_all
+    unless Current.family.syncing?
+      Current.family.sync_later
+    end
+
+    redirect_to accounts_path
   end
 
   private
-
-  def account_params
-    params.require(:account).permit(:name, :accountable_type, :balance, :subtype)
-  end
-
-  def account_type_class
-    if params[:type].present? && Account.accountable_types.include?(params[:type])
-      params[:type].constantizes
-    else
-      Account # Default to Account if type is not provided or invalid
+    def set_account
+      @account = Current.family.accounts.find(params[:id])
     end
-  end
 end

@@ -1,84 +1,57 @@
 <!DOCTYPE html>
-<html class="bg-offwhite">
+<html class="h-full <%= @os %>" lang="en">
   <head>
     <title><%= content_for(:title) || "Maybe" %></title>
-    <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Maybe">
 
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <link rel="manifest" href="/manifest.json">
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
-    <%= hotwire_livereload_tags if Rails.env.development? %>
 
+    <%= javascript_include_tag "https://cdn.plaid.com/link/v2/stable/link-initialize.js" %>
+    <%= combobox_style_tag %>
+
+    <%= javascript_importmap_tags %>
     <%= turbo_refreshes_with method: :morph, scroll: :preserve %>
+
+    <meta name="viewport"
+          content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Maybe">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
+
     <%= yield :head %>
   </head>
 
   <body class="h-full">
-    <div class="flex">
-      <div class="flex-col p-5 min-w-80">
-        <div class="flex items-center justify-between">
-          <%= link_to root_path do %>
-            <%= image_tag 'logo.svg', alt: 'Maybe' %>
-          <% end %>
-          <div class="relative" data-controller="dropdown">
-            <div class="flex" data-action="click->dropdown#toggleMenu">
-              <div class="mr-1.5 text-white w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center text-lg uppercase"><%= current_user.email.first %></div>
-            </div>
+    <%= render "impersonation_sessions/super_admin_bar" if Current.true_user&.super_admin? && show_super_admin_bar? %>
+    <%= render "impersonation_sessions/approval_bar" if Current.true_user&.impersonated_support_sessions&.initiated&.any? %>
 
-            <div class="absolute z-10 hidden w-screen px-2 mt-2 -translate-x-1/2 left-1/2 max-w-min" data-dropdown-target="menu">
-              <div class="w-48 px-3 text-sm font-semibold leading-6 text-gray-900 bg-white shadow-lg shrink rounded-xl ring-1 ring-gray-900/5">
-                <%= button_to "Log Out", session_path, method: :delete, class: 'block p-2 hover:text-gray-600' %>
-              </div>
-            </div>
+    <div class="fixed z-50 bottom-6 left-6">
+      <div id="notification-tray" class="space-y-1">
+        <%= render_flash_notifications %>
 
-          </div>
-        </div>
-        <nav>
-          <ul class="mt-6 space-y-2">
-            <li>
-              <%= link_to root_path, class: 'block hover:bg-gray-100 -ml-2 p-2 text-sm font-semibold text-gray-900 flex items-center rounded' do %>
-                <%= inline_svg_tag('icon-dashboard.svg', class: 'text-black stroke-current mr-2') %>
-                Dashboard
-              <% end %>
-            </li>
-          </ul>
-        </nav>
-        <div class="flex flex-col mt-6">
-          <div class="flex items-center justify-between">
-            <span class="text-xs">Accounts</span>
-            <%= link_to new_account_path, class: 'block hover:bg-gray-100 p-2 text-sm font-semibold text-gray-900 flex items-center rounded' do %>
-              <%= inline_svg_tag('icon-add.svg', class: 'text-gray-500 fill-current') %>
-            <% end %>
-          </div>
-          <div>
-            <h2 class="text-sm font-semibold font-display">Cash</h2>
-
-            <% current_family.accounts.each do |account| %>
-              <div class="flex items-center justify-between py-2">
-                <div class="flex items-center text-sm">
-                  <%= account.name %>
-                </div>
-                <p class="text-sm text-right">
-                  <span class="block mb-1"><%= number_to_currency account.balance %></span>
-                </p>
-              </div>
-            <% end %>
-          </div>
-        </div>
+        <% if Current.family&.syncing? %>
+          <%= render "shared/syncing_notice" %>
+        <% end %>
       </div>
-      <main class="flex-grow py-5 pr-5">
-        <%= yield %>
-      </main>
     </div>
+
+    <%= family_notifications_stream %>
+    <%= family_stream %>
+
+    <%= content_for?(:content) ? yield(:content) : yield %>
+
+    <%= turbo_frame_tag "modal" %>
+    <%= turbo_frame_tag "drawer" %>
+
+    <%= render "shared/confirm_modal" %>
+
+    <% if self_hosted? && Current.user&.onboarded_at.present? %>
+      <%= render "shared/app_version" %>
+    <% end %>
   </body>
 </html>
